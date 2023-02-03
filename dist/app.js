@@ -27,42 +27,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv = __importStar(require("dotenv"));
+const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
-const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const passport_1 = __importDefault(require("passport"));
 const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
-dotenv.config({ path: __dirname + "/.env" }); // env file is expose, dont forget to include in the .gitignore file
-const allowedOrigins = ["http://localhost:5173/"]; // the URI you want CORS to allow
+dotenv.config({ path: __dirname + '/.env' }); // env file is expose, dont forget to include in the .gitignore file
+const allowedOrigins = ['http://localhost:5173/']; // the URI you want CORS to allow
 const rateLimitOptions = {
     windowMs: 15 * 60 * 1000,
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: 100 // limit each IP to 100 requests per windowMs
 };
 const options = {
-    origin: allowedOrigins,
+    origin: allowedOrigins
 };
 const app = (0, express_1.default)();
 app.use(passport_1.default.initialize());
 app.use((0, express_rate_limit_1.default)(rateLimitOptions));
 app.use(helmet_1.default.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'"],
-    },
+        defaultSrc: ['\'self\'']
+    }
 }));
+const PORT = parseInt(process.env.PORT, 10) || 8081;
 app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
-app.get("/", (req, res) => {
-    res.send("Sever Up");
+app.get('/', (req, res) => {
+    let local = req.hostname;
+    res.send(`Server is Operating ${local}:${PORT}`);
 });
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)(options));
-const PORT = parseInt(process.env.PORT, 10) || 8081;
 app.listen(PORT, () => {
-    console.log(`App is running on 🚀  ${PORT}`);
+    console.log(`App is running on 🚀 ${PORT}`);
 });
 //# sourceMappingURL=app.js.map
