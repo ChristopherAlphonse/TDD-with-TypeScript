@@ -5,6 +5,7 @@
   "main": "dist",
   "scripts": {
     "start": "tsc && node dist/app.js",
+    "test": "jest",
     "dev": "npx concurrently -k -n COMPILER,NODEMON -c red,blue \"npx tsc -w\"  \"nodemon -w dist -q dist/app.js\" ",
     "checked": "ncu && ncu -u && yarn install && yarn autoclean --force",
     "lint": "./node_modules/.bin/tslint -c tslint.json 'src/**/**.ts' "
