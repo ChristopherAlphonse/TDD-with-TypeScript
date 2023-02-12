@@ -45,7 +45,7 @@ const diff = <TObject extends saveDiffObj>(
   });
   const result = Object.fromEntries(entries);
 
-  return omitBy(result, isUndefined);
+  return omitBy(result, isUndefined) as Diff<TObject>;
 };
 
 const ModuleSaveAction = {
