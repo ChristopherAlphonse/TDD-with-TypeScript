@@ -1,38 +1,54 @@
 import ModuleSaveAction, { SaveSearch } from './saved-search';
 
 const buildSaveSearch = (): SaveSearch => ({
-    listingTypes: 'sell',
-    TownId: [],
-    propertyTypes: ['Land'],
+  listingTypes: 'sell',
+  TownId: [],
+  propertyTypes: ['Land'],
 });
 
 describe('SaveSearch', () => {
-    test(' detect changes on string', () => {
-        const before: SaveSearch = {
-            ...buildSaveSearch(),
-            listingTypes: 'sell',
-        };
-        const after: SaveSearch = {
-            ...buildSaveSearch(),
-            listingTypes: 'rent',
-        };
+  test(' detect changes on string', () => {
+    const before: SaveSearch = {
+      ...buildSaveSearch(),
+      listingTypes: 'sell',
+    };
+    const after: SaveSearch = {
+      ...buildSaveSearch(),
+      listingTypes: 'rent',
+    };
+    const diff = ModuleSaveAction.diff(before, after);
 
-        const result = {
-            listingTypes: {
-                before: 'sell',
-                after: 'rent',
-            },
-        };
-        expect(ModuleSaveAction.difference(before, after)).toEqual(result);
-    });
-});
-
-test(' if string remain the same', () => {
+    const result = {
+      listingTypes: {
+        before: 'sell',
+        after: 'rent',
+      },
+    };
+    expect(ModuleSaveAction.diff(before, after)).toMatchObject(result);
+  });
+  test(' if string remain the same', () => {
     const before: SaveSearch = buildSaveSearch();
     const after: SaveSearch = buildSaveSearch();
 
-    const result = {
-        listingTypes: undefined,
+    const result = {};
+    expect(ModuleSaveAction.diff(before, after)).toMatchObject(result);
+  });
+  test(' detect removal from Array values', () => {
+    const before: SaveSearch = {
+      ...buildSaveSearch(),
+      TownId: ['number-1'],
     };
-    expect(ModuleSaveAction.difference(before, after)).toEqual(result);
+    const after: SaveSearch = {
+      ...buildSaveSearch(),
+      TownId: ['number-2'],
+    };
+
+    const result = {
+      TownId: {
+        added: ['number-2'],
+        removed: ['number-1'],
+      },
+    };
+    expect(ModuleSaveAction.diff(before, after)).toMatchObject(result);
+  });
 });
